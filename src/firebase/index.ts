@@ -1,5 +1,5 @@
 import firebase, { auth } from "./firebase";
-import { signInWithGoogle, signOut } from "./auth";
-import { createUserProfileDocument } from "./database";
+import * as authMethods from "./auth";
+import * as db from "./database";
 
-export { firebase, auth, signInWithGoogle, createUserProfileDocument, signOut };
+export { firebase, auth, authMethods, db };

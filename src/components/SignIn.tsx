@@ -1,10 +1,12 @@
 import React from "react";
-import { signInWithGoogle } from "../firebase";
+import { authMethods } from "../firebase";
 
 const SignIn: React.FC = () => {
   return (
     <div>
-      <button onClick={signInWithGoogle}>Sign in with google</button>
+      <button onClick={authMethods.signInWithGoogle}>
+        Sign in with google
+      </button>
     </div>
   );
 };

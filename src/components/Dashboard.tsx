@@ -1,11 +1,11 @@
 import React from "react";
-import { signOut } from "../firebase";
+import { authMethods } from "../firebase";
 
 const Dashboard: React.FC = () => {
   return (
     <div>
       <p>You are logged in</p>
-      <button onClick={signOut}>LogOut</button>
+      <button onClick={authMethods.signOut}>LogOut</button>
     </div>
   );
 };

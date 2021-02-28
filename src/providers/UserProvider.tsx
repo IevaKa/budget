@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { auth, createUserProfileDocument, firebase } from "../firebase";
+import { auth, db, firebase } from "../firebase";
 
 export interface AuthUser {
   id: string;
@@ -26,7 +26,7 @@ export const UserContext = createContext<IUserContext>({
 });
 
 const UserProvider: React.FC = ({ children }) => {
-  const [authUser, setAuthUser] = useState<AuthUser>(authUserDefault);
+  const [authUser, setAuthUser] = useState(authUserDefault);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const UserProvider: React.FC = ({ children }) => {
     (async () => {
       unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
         if (userAuth) {
-          const userRef = await createUserProfileDocument(userAuth);
+          const userRef = await db.createUserProfileDocument(userAuth);
           userRef &&
             userRef.onSnapshot((snapshot) => {
               const data = snapshot.data();
@@ -45,6 +45,7 @@ const UserProvider: React.FC = ({ children }) => {
               }
             });
         } else {
+          setAuthUser(authUserDefault);
           setIsLoading(false);
         }
       });
