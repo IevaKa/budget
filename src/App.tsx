@@ -19,6 +19,7 @@ const App: React.FC = () => {
           path={routes.LANDING}
           component={LandingComponent}
         />
+        <Route exact={true} path="/test" component={Dashboard} />
       </Switch>
     </BrowserRouter>
   );

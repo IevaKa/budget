@@ -2,6 +2,8 @@ import React, { useState, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import lottie from "lottie-web";
 import { auth, db, authMethods } from "../firebase";
+import Button from "../elements/Button";
+import { PRIMARY_GREEN, DARK_BLUE } from "../constants/colors";
 
 const Animation = styled.div`
   width: 200px;
@@ -23,7 +25,7 @@ const SignIn: React.FC = () => {
         animationData: require("../assets/finance-guru.json"),
       });
     }
-  });
+  }, []);
 
   const handleSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
@@ -41,6 +43,12 @@ const SignIn: React.FC = () => {
   return (
     <div>
       <Animation ref={container} />
+      <Button
+        link="/test"
+        buttonText="Login"
+        buttonColor={PRIMARY_GREEN}
+        textColor={DARK_BLUE}
+      />
       <form className="SignUp" onSubmit={handleSubmit}>
         <h2>Sign Up</h2>
         <input
