@@ -1,9 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect, useRef } from "react";
+import styled from "styled-components";
+import lottie from "lottie-web";
 import { auth, db, authMethods } from "../firebase";
+
+const Animation = styled.div`
+  width: 200px;
+`;
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const container = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (container.current !== null) {
+      lottie.loadAnimation({
+        container: container.current,
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        animationData: require("../assets/finance-guru.json"),
+      });
+    }
+  });
 
   const handleSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
@@ -13,15 +33,14 @@ const SignIn: React.FC = () => {
         email,
         password
       );
-      if (user !== null) {
-        db.createUserProfileDocument(user);
-      }
+      user !== null && db.createUserProfileDocument(user);
     } catch (error) {
       console.error(error);
     }
   };
   return (
     <div>
+      <Animation ref={container} />
       <form className="SignUp" onSubmit={handleSubmit}>
         <h2>Sign Up</h2>
         <input
