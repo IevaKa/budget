@@ -4,14 +4,28 @@ import lottie from "lottie-web";
 import { auth, db, authMethods } from "../firebase";
 import Button from "../elements/Button";
 import { PRIMARY_GREEN, DARK_BLUE } from "../constants/colors";
+import InputField from "../elements/InputField";
+
+const Div = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10vh;
+`;
 
 const Animation = styled.div`
-  width: 200px;
+  margin-right: 3rem;
+`;
+
+const Form = styled.form`
+  margin-bottom: 10rem;
+  width: 300px;
 `;
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const container = useRef<HTMLDivElement>(null);
 
@@ -27,50 +41,59 @@ const SignIn: React.FC = () => {
     }
   }, []);
 
-  const handleSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
-    e.preventDefault();
+  //   const handleSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
+  //     e.preventDefault();
 
+  //     try {
+  //       const { user } = await auth.createUserWithEmailAndPassword(
+  //         email,
+  //         password
+  //       );
+  //       user !== null && db.createUserProfileDocument(user);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  const onSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
+    e.preventDefault();
+    setErrorMessage("");
     try {
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
+      await authMethods.login(email, password);
+    } catch (err) {
+      setErrorMessage(
+        "Sorry, I couldn't find an account with those credentials"
       );
-      user !== null && db.createUserProfileDocument(user);
-    } catch (error) {
-      console.error(error);
     }
   };
   return (
-    <div>
+    <Div>
       <Animation ref={container} />
-      <Button
-        link="/test"
-        buttonText="Login"
-        buttonColor={PRIMARY_GREEN}
-        textColor={DARK_BLUE}
-      />
-      <form className="SignUp" onSubmit={handleSubmit}>
-        <h2>Sign Up</h2>
-        <input
-          type="email"
+
+      <Form onSubmit={onSubmit}>
+        <InputField
+          labelText="Email"
           name="email"
-          placeholder="Email"
+          type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          setValue={setEmail}
+          errorMessage={errorMessage}
         />
-        <input
-          type="password"
+        <InputField
+          labelText="Password"
           name="password"
-          placeholder="Password"
+          type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          setValue={setPassword}
+          errorMessage={errorMessage}
         />
-        <input type="submit" value="Sign Up" />
-      </form>
-      <button onClick={authMethods.signInWithGoogle}>
-        Sign in with google
-      </button>
-    </div>
+        <Button buttonText="Login" buttonColor={PRIMARY_GREEN} />
+      </Form>
+
+      {/* <button onClick={authMethods.signInWithGoogle}> */}
+      {/* Sign in with google
+      </button> */}
+    </Div>
   );
 };
 
