@@ -7,7 +7,7 @@ const Div = styled.div`
   flex-direction: column-reverse;
   width: 100%;
   position: relative;
-  margin-top: 20px;
+  margin-top: 1.7rem;
 `;
 
 interface IInput {
@@ -18,8 +18,8 @@ const Input = styled.input<IInput>`
   border: 0;
   border-bottom: 2px solid ${DARK_BLUE};
   font-family: inherit;
-  padding: 10px 0;
-  border-color: ${({ msg }) => (msg && msg.length ? ERROR_RED : "inherit")};
+  padding: 0.2rem 0;
+  border-color: ${({ msg }) => (msg && msg.length ? ERROR_RED : DARK_BLUE)};
   transition: all 0.5s ease-out;
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -33,13 +33,6 @@ const Input = styled.input<IInput>`
   }
 `;
 
-const ErrorMessage = styled.div`
-  font-size: 10px;
-  height: 15px;
-  color: ${ERROR_RED};
-  margin-top: 2px;
-`;
-
 interface ILabel {
   value: number;
   msg?: string;
@@ -49,11 +42,11 @@ const Label = styled.label<ILabel>`
   font-weight: 600;
   font-size: 14px;
   position: absolute;
-  top: ${(props) => (props.value ? "-15px" : "10px")};
+  top: ${(props) => (props.value ? "-1.1rem" : "0rem")};
   color: ${({ msg }) => (msg && msg.length ? ERROR_RED : "inherit")};
   transition: all 0.5s ease-out;
   ${Input}:focus ~ & {
-    top: -15px;
+    top: -1.1rem;
     color: ${PRIMARY_GREEN};
   }
 `;
@@ -84,7 +77,6 @@ const InputField: React.FC<IInputField> = ({
   }, [errorMessage]);
   return (
     <Div>
-      <ErrorMessage>{errorMsg}</ErrorMessage>
       <Input
         name={name}
         value={value}

@@ -4,18 +4,21 @@ import { useHistory } from "react-router-dom";
 
 interface ButtonProps {
   buttonColor: string;
+  hoverColor: string;
   textColor?: string;
+  textSize?: string;
+  fontWeight?: number;
 }
 
 const StyledButton = styled.button<ButtonProps>`
   width: 100%;
-  margin-top: 15px;
+  margin-top: 1rem;
   height: 48px;
   border: 0;
   border-radius: 5px;
   font-family: inherit;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: ${({ textSize }) => (textSize ? textSize : "18px")};
+  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 600)};
   cursor: pointer;
   position: relative;
   top: 0;
@@ -28,23 +31,52 @@ const StyledButton = styled.button<ButtonProps>`
   }
   &:hover {
     top: -1px;
-    background-color: #29ccaf;
+    background-color: ${(props) => props.hoverColor};
   }
+`;
+
+const Icon = styled.img`
+  width: 20px;
+  margin-right: 0.5rem;
+  margin-bottom: -0.2rem;
+  /* padding-top: 0.3rem; */
 `;
 
 export interface IProps {
   buttonText: string;
+  textSize?: string;
+  fontWeight?: number;
   buttonColor: string;
+  hoverColor: string;
   textColor?: string;
+  iconPath?: string;
+  onClick?: () => {};
 }
 
-const Button: React.FC<IProps> = ({ buttonText, buttonColor, textColor }) => {
+const Button: React.FC<IProps> = ({
+  buttonText,
+  textSize,
+  fontWeight,
+  buttonColor,
+  hoverColor,
+  textColor,
+  iconPath,
+  onClick,
+}) => {
   //   let history = useHistory();
   //   const onClick = (): void => {
   //     history.push(url);
   //   };
   return (
-    <StyledButton buttonColor={buttonColor} textColor={textColor}>
+    <StyledButton
+      onClick={onClick}
+      buttonColor={buttonColor}
+      textColor={textColor}
+      hoverColor={hoverColor}
+      textSize={textSize}
+      fontWeight={fontWeight}
+    >
+      {iconPath && <Icon src={iconPath} alt=""></Icon>}
       {buttonText}
     </StyledButton>
   );
