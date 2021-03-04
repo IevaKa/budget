@@ -16,9 +16,10 @@ interface IInput {
 
 const Input = styled.input<IInput>`
   border: 0;
-  border-bottom: 2px solid ${DARK_BLUE};
+  border-bottom: 1px solid ${DARK_BLUE};
   font-family: inherit;
   padding: 0.2rem 0;
+  outline: none;
   border-color: ${({ msg }) => (msg && msg.length ? ERROR_RED : DARK_BLUE)};
   transition: all 0.5s ease-out;
   &:-webkit-autofill,
@@ -27,8 +28,8 @@ const Input = styled.input<IInput>`
   &:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px white inset !important;
   }
-  &:focus {
-    outline: none;
+  &:focus,
+  &:hover {
     border-color: ${PRIMARY_GREEN};
   }
 `;
@@ -44,10 +45,13 @@ const Label = styled.label<ILabel>`
   position: absolute;
   top: ${(props) => (props.value ? "-1.1rem" : "0rem")};
   color: ${({ msg }) => (msg && msg.length ? ERROR_RED : "inherit")};
+  opacity: 0.8;
   transition: all 0.5s ease-out;
-  ${Input}:focus ~ & {
+  ${Input}:focus ~ &,
+  ${Div}:hover & {
     top: -1.1rem;
     color: ${PRIMARY_GREEN};
+    opacity: 1;
   }
 `;
 

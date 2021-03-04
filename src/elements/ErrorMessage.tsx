@@ -22,7 +22,7 @@ const MessageDiv = styled.div<IErrorMessage>`
   background-color: rgba(230, 0, 35, 0.1);
   visibility: ${({ message }) => (message.length ? "visible" : "hidden")};
   transition: ${({ message }) => (message.length ? "2s" : "0")};
-  right: ${({ message }) => (message.length ? "0" : "-100%")};
+  right: ${({ message }) => (message.length ? "0" : "-40vw")};
 `;
 
 const ErrorMessage: React.FC<IErrorMessage> = ({ message }) => {

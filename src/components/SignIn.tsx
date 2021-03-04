@@ -24,8 +24,8 @@ import GoogleLogo from "../assets/GoogleLogo.svg";
 const Div = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 10vh;
-  margin-left: -3vw;
+  margin-top: 13vh;
+  margin-left: -5vw;
 `;
 
 const Or = styled.p`
@@ -52,7 +52,7 @@ const Or = styled.p`
 
 const AuthActions = styled.div`
   width: 300px;
-  margin-top: 6vh;
+  margin-top: 5vh;
 `;
 
 const Animation = styled.div`
@@ -149,10 +149,6 @@ const SignIn: React.FC = () => {
         <p>Don't have an account yet? Sign up!</p>
         <ErrorMessage message={errorMessage}></ErrorMessage>
       </AuthActions>
-
-      {/* <button onClick={authMethods.signInWithGoogle}> */}
-      {/* Sign in with google
-      </button> */}
     </Div>
   );
 };
