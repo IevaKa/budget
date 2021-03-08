@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { PRIMARY_GREEN, DARK_BLUE, ERROR_RED } from "../constants/colors";
+import ShowIcon from "../assets/show.svg";
+import HideIcon from "../assets/hide.svg";
 
 const Div = styled.div`
   display: flex;
@@ -11,7 +13,7 @@ const Div = styled.div`
 `;
 
 interface IInput {
-  msg?: string;
+  errorCount?: number;
 }
 
 const Input = styled.input<IInput>`
@@ -20,7 +22,8 @@ const Input = styled.input<IInput>`
   font-family: inherit;
   padding: 0.2rem 0;
   outline: none;
-  border-color: ${({ msg }) => (msg && msg.length ? ERROR_RED : DARK_BLUE)};
+  border-color: ${({ errorCount }) =>
+    errorCount && errorCount > 0 ? ERROR_RED : DARK_BLUE};
   transition: all 0.5s ease-out;
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -36,7 +39,7 @@ const Input = styled.input<IInput>`
 
 interface ILabel {
   value: number;
-  msg?: string;
+  errorCount?: number;
 }
 
 const Label = styled.label<ILabel>`
@@ -44,7 +47,8 @@ const Label = styled.label<ILabel>`
   font-size: 14px;
   position: absolute;
   top: ${(props) => (props.value ? "-1.1rem" : "0rem")};
-  color: ${({ msg }) => (msg && msg.length ? ERROR_RED : "inherit")};
+  color: ${({ errorCount }) =>
+    errorCount && errorCount > 0 ? ERROR_RED : "inherit"};
   opacity: 0.8;
   transition: all 0.5s ease-out;
   ${Input}:focus ~ &,
@@ -55,13 +59,22 @@ const Label = styled.label<ILabel>`
   }
 `;
 
+const Icon = styled.img`
+  width: 25px;
+  position: absolute;
+  top: -4px;
+  right: 0;
+  cursor: pointer;
+`;
+
 interface IInputField {
   labelText: string;
   name: string;
   type: string;
   value: string;
-  errorMessage?: string;
+  errorCount?: number;
   setValue: React.Dispatch<React.SetStateAction<string>>;
+  visibilityToggle: boolean;
 }
 
 const InputField: React.FC<IInputField> = ({
@@ -69,31 +82,37 @@ const InputField: React.FC<IInputField> = ({
   name,
   value,
   type,
-  errorMessage,
+  errorCount,
   setValue,
+  visibilityToggle,
 }) => {
-  const [errorMsg, setErrorMsg] = useState(errorMessage);
+  const [errCount, setErrCount] = useState(errorCount);
+  const [hide, setHide] = useState(true);
 
   useEffect(() => {
-    if (errorMessage) {
-      setErrorMsg(errorMessage);
-    }
-  }, [errorMessage]);
+    setErrCount(errorCount);
+  }, [errorCount]);
   return (
     <Div>
       <Input
         name={name}
         value={value}
-        type={type}
+        type={visibilityToggle && !hide ? "text" : type}
         onChange={(e) => {
+          setErrCount(0);
           setValue(e.target.value);
-          setErrorMsg("");
         }}
-        msg={errorMsg}
+        errorCount={errCount}
       />
-      <Label msg={errorMsg} htmlFor={name} value={value.length}>
+      <Label errorCount={errCount} htmlFor={name} value={value.length}>
         {labelText}
       </Label>
+      {visibilityToggle && (
+        <Icon
+          onClick={() => setHide(!hide)}
+          src={hide ? HideIcon : ShowIcon}
+        ></Icon>
+      )}
     </Div>
   );
 };
