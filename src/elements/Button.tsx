@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
 
 interface ButtonProps {
   buttonColor: string;
@@ -39,7 +38,6 @@ const Icon = styled.img`
   width: 20px;
   margin-right: 0.5rem;
   margin-bottom: -0.2rem;
-  /* padding-top: 0.3rem; */
 `;
 
 export interface IProps {
@@ -63,10 +61,6 @@ const Button: React.FC<IProps> = ({
   iconPath,
   onClick,
 }) => {
-  //   let history = useHistory();
-  //   const onClick = (): void => {
-  //     history.push(url);
-  //   };
   return (
     <StyledButton
       onClick={onClick}

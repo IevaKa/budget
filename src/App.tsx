@@ -17,7 +17,7 @@ const App: React.FC = () => {
           {!authUser.id ? (
             <Redirect to={routes.LOG_IN} />
           ) : (
-            <Redirect to="/test" />
+            <Redirect to={routes.DASHBOARD} />
           )}
         </Route>
         <Route
@@ -46,7 +46,14 @@ const App: React.FC = () => {
             />
           )}
         />
-        <Route exact={true} path="/test" component={Dashboard} />
+
+        <Route
+          exact={true}
+          path={routes.DASHBOARD}
+          render={() =>
+            authUser.id ? <Dashboard /> : <Redirect to="/login" />
+          }
+        />
       </Switch>
     </BrowserRouter>
   );

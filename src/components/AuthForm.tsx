@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import * as routes from "../constants/routes";
 import styled from "styled-components";
 import { auth, db, authMethods } from "../firebase";
 import Button from "../elements/Button";
@@ -38,6 +40,12 @@ const Or = styled.p`
 const AuthActions = styled.div`
   width: 300px;
   margin-top: 5vh;
+
+  @media only screen and (max-width: 800px) {
+    width: auto;
+    margin: 0 0.5rem;
+    /* width: 80vw; */
+  }
 `;
 
 const Form = styled.form`
@@ -62,36 +70,48 @@ const AuthForm: React.FC<IAuthForm> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  //   const handleSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
-  //     e.preventDefault();
+  let history = useHistory();
 
-  //     try {
-  //       const { user } = await auth.createUserWithEmailAndPassword(
-  //         email,
-  //         password
-  //       );
-  //       user !== null && db.createUserProfileDocument(user);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+  const login = async () => {
+    try {
+      await authMethods.login(email, password);
+      setErrorCount(0);
+      history.push("/dashboard");
+    } catch (err) {
+      setErrorCount(errorCount + 1);
+      setErrorMessage(
+        "Sorry, I couldn't find an account with those credentials."
+      );
+    }
+  };
+
+  const signup = async () => {
+    if (password.length < 6) {
+      setErrorCount(errorCount + 1);
+      setErrorMessage("I'd prefer 6 or more characters for your password");
+    } else {
+      try {
+        const { user } = await auth.createUserWithEmailAndPassword(
+          email,
+          password
+        );
+        setErrorCount(0);
+        user !== null && db.createUserProfileDocument(user);
+        history.push("/dashboard");
+      } catch (error) {
+        setErrorCount(errorCount + 1);
+        setErrorMessage(error.message);
+      }
+    }
+  };
 
   const onSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
 
     if (formButtonText === "Login") {
-      try {
-        await authMethods.login(email, password);
-        setErrorCount(0);
-      } catch (err) {
-        setErrorCount(errorCount + 1);
-        setErrorMessage(
-          "Sorry, I couldn't find an account with those credentials."
-        );
-      }
+      login();
     } else {
-      setErrorCount(errorCount + 1);
-      setErrorMessage("Sorry, this hasn't been implemented yet");
+      signup();
     }
   };
   return (

@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
 import { auth, db, firebase } from "../firebase";
-// import * as routes from "../constants/routes";
 
 export interface AuthUser {
   id: string;

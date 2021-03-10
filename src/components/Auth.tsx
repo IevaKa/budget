@@ -1,7 +1,6 @@
 import React, { useState, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import lottie from "lottie-web";
-import { auth, db, authMethods } from "../firebase";
 import AuthForm from "./AuthForm";
 import ErrorMessage from "../elements/ErrorMessage";
 import { Link } from "react-router-dom";
@@ -11,21 +10,42 @@ import { PRIMARY_BLUE, PRIMARY_BLUE_HOVER } from "../constants/colors";
 // error message as separate element - its too clutered ✅
 // visibility toggle ✅
 // google login -error handling, set up a document if nothin in firebase
-// sign up message
+// sign up message ✅
+// responsive design ✅
+// secure password ✅
 
 const Div = styled.div`
   display: flex;
-  justify-content: center;
+  width: fit-content;
+  margin: 0 auto;
   margin-top: 13vh;
-  margin-left: -5vw;
+
+  @media only screen and (max-width: 800px) {
+    flex-direction: column;
+    margin-top: 3vh;
+    > div {
+      margin: 0 auto;
+    }
+  }
 `;
 
 const Animation = styled.div`
   margin-right: 3rem;
+
+  @media only screen and (max-width: 800px) {
+    max-width: 55vw;
+    margin: 0 auto;
+    margin-bottom: -5vh;
+  }
 `;
 
 const Paragraph = styled.p`
   font-size: 14px;
+  width: 300px;
+  @media only screen and (max-width: 800px) {
+    font-size: 18px;
+    margin-top: 1rem;
+  }
 `;
 
 const StyledLink = styled(Link)`
