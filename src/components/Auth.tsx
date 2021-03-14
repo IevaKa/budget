@@ -6,14 +6,6 @@ import ErrorMessage from "../elements/ErrorMessage";
 import { Link } from "react-router-dom";
 import { PRIMARY_BLUE, PRIMARY_BLUE_HOVER } from "../constants/colors";
 
-// TODO
-// error message as separate element - its too clutered ✅
-// visibility toggle ✅
-// google login -error handling, set up a document if nothin in firebase
-// sign up message ✅
-// responsive design ✅
-// secure password ✅
-
 const Div = styled.div`
   display: flex;
   width: fit-content;

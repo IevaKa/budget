@@ -23,28 +23,36 @@ const App: React.FC = () => {
         <Route
           exact={true}
           path={routes.LOG_IN}
-          render={() => (
-            <Auth
-              paragraphURL={routes.SIGN_UP}
-              paragraphText="Don't have an account yet?"
-              linkText="Sign Up!"
-              formButtonText="Login"
-              googleButtonText="Login with Google"
-            />
-          )}
+          render={() =>
+            !authUser.id ? (
+              <Auth
+                paragraphURL={routes.SIGN_UP}
+                paragraphText="Don't have an account yet?"
+                linkText="Sign Up!"
+                formButtonText="Login"
+                googleButtonText="Login with Google"
+              />
+            ) : (
+              <Redirect to={routes.DASHBOARD} />
+            )
+          }
         />
         <Route
           exact={true}
           path={routes.SIGN_UP}
-          render={() => (
-            <Auth
-              paragraphURL={routes.LOG_IN}
-              paragraphText="Already have an account?"
-              linkText="Log in!"
-              formButtonText="Sign Up"
-              googleButtonText="Sign up with Google"
-            />
-          )}
+          render={() =>
+            !authUser.id ? (
+              <Auth
+                paragraphURL={routes.LOG_IN}
+                paragraphText="Already have an account?"
+                linkText="Log in!"
+                formButtonText="Sign Up"
+                googleButtonText="Sign up with Google"
+              />
+            ) : (
+              <Redirect to={routes.DASHBOARD} />
+            )
+          }
         />
 
         <Route

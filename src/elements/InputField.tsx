@@ -38,7 +38,7 @@ const Input = styled.input<IInput>`
 `;
 
 interface ILabel {
-  value: number;
+  value: string;
   errorCount?: number;
 }
 
@@ -73,7 +73,7 @@ interface IInputField {
   type: string;
   value: string;
   errorCount?: number;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  setValue: React.Dispatch<React.SetStateAction<any>>;
   visibilityToggle: boolean;
 }
 
@@ -104,7 +104,7 @@ const InputField: React.FC<IInputField> = ({
         }}
         errorCount={errCount}
       />
-      <Label errorCount={errCount} htmlFor={name} value={value.length}>
+      <Label errorCount={errCount} htmlFor={name} value={value}>
         {labelText}
       </Label>
       {visibilityToggle && (

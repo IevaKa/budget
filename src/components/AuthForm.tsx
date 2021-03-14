@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import * as routes from "../constants/routes";
 import styled from "styled-components";
 import { auth, db, authMethods } from "../firebase";
 import Button from "../elements/Button";
@@ -13,6 +12,7 @@ import {
   GOOGLE_RED_HOVER,
 } from "../constants/colors";
 import InputField from "../elements/InputField";
+import Spacer from "../elements/Spacer";
 import GoogleLogo from "../assets/GoogleLogo.svg";
 
 const Or = styled.p`
@@ -39,12 +39,11 @@ const Or = styled.p`
 
 const AuthActions = styled.div`
   width: 300px;
-  margin-top: 5vh;
+  margin-top: 8vh;
 
   @media only screen and (max-width: 800px) {
     width: auto;
     margin: 0 0.5rem;
-    /* width: 80vw; */
   }
 `;
 
@@ -74,9 +73,9 @@ const AuthForm: React.FC<IAuthForm> = ({
 
   const login = async () => {
     try {
-      await authMethods.login(email, password);
+      const test = await authMethods.login(email, password);
+      console.log("🚀 ~ file: AuthForm.tsx ~ line 78 ~ login ~ test", test);
       setErrorCount(0);
-      history.push("/dashboard");
     } catch (err) {
       setErrorCount(errorCount + 1);
       setErrorMessage(
@@ -125,6 +124,7 @@ const AuthForm: React.FC<IAuthForm> = ({
         textColor={WHITE}
         iconPath={GoogleLogo}
         onClick={authMethods.signInWithGoogle}
+        buttonShadow={true}
       />
       <Or>or</Or>
       <Form onSubmit={onSubmit}>
@@ -146,12 +146,15 @@ const AuthForm: React.FC<IAuthForm> = ({
           errorCount={errorCount}
           visibilityToggle={true}
         />
+        <Spacer marginTop="1rem" />
         <Button
           buttonText={formButtonText}
           buttonColor={PRIMARY_GREEN}
           hoverColor={PRIMARY_GREEN_HOVER}
+          buttonShadow={true}
         />
       </Form>
+      <Spacer marginTop="0.5rem" />
     </AuthActions>
   );
 };
