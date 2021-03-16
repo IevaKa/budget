@@ -17,7 +17,8 @@ interface ButtonProps {
 interface IProps extends ButtonProps {
   buttonText: string;
   iconPath?: string;
-  onClick?: () => {};
+  type?: "submit" | "button";
+  onClick?: () => void;
 }
 
 const StyledButton = styled.button<ButtonProps>`
@@ -65,6 +66,7 @@ const Button: React.FC<IProps> = ({
   hoverTextColor,
   textColor,
   iconPath,
+  type,
   onClick,
 }) => {
   return (
@@ -80,6 +82,7 @@ const Button: React.FC<IProps> = ({
       height={height}
       border={border}
       hoverTextColor={hoverTextColor}
+      type={type}
     >
       {iconPath && <Icon src={iconPath} alt=""></Icon>}
       {buttonText}

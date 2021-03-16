@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 import { authMethods } from "../firebase";
 import { OFF_WHITE, DARK_BLUE } from "../constants/colors";
 import Button from "../elements/Button";
-import { UserContext } from "../providers/UserProvider";
+import { auth } from "../firebase";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,11 +20,12 @@ const UserName = styled.p`
   margin-top: 5px;
 `;
 
-const Navbar = () => {
-  const { authUser } = useContext(UserContext);
+const Navbar: React.FC = () => {
   return (
     <Wrapper>
-      <UserName>{authUser.email}</UserName>
+      {auth.currentUser !== null && (
+        <UserName>{auth.currentUser.email}</UserName>
+      )}
       <Button
         buttonText="Logout"
         width="100px"
