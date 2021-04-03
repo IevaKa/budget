@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import { auth, firestore } from "../firebase";
+import {
+  StyledForm,
+  RadioArea,
+  StyledParagraph,
+  ButtonArea,
+} from "./IncomeEntry";
+import { ExpenseCategory } from "./Dashboard";
 import InputField from "../elements/InputField";
 import styled from "styled-components";
 import Button from "../elements/Button";
+import Select from "../elements/Select";
 import Spacer from "../elements/Spacer";
 import {
   PRIMARY_GREEN,
@@ -11,65 +19,33 @@ import {
   DARK_BLUE,
 } from "../constants/colors";
 
-export const StyledForm = styled.form`
-  width: 300px;
-  padding: 2rem;
-  border: 1px solid ${DARK_BLUE};
-  border-radius: 10px;
-`;
-
-export const RadioArea = styled.div`
-  display: flex;
-  width: 55%;
-  justify-content: space-between;
-  margin-top: 0.3rem;
-
-  label {
-    font-weight: 600;
-    font-size: 14px;
-    input[type="radio"] {
-      margin-right: 0.2rem;
-    }
-  }
-`;
-
-export const StyledParagraph = styled.p`
-  font-weight: 600;
-  font-size: 14px;
-  opacity: 0.8;
-`;
-
-export const ButtonArea = styled.div`
-  margin-top: 2rem;
-  display: flex;
-  justify-content: space-between;
-`;
-
-export interface IProps {
+interface IProps {
   hide: React.Dispatch<React.SetStateAction<boolean>>;
+  categories: ExpenseCategory[];
 }
 
-const IncomeEntry: React.FC<IProps> = ({ hide }) => {
-  const [fixed, setFixed] = useState(true);
+const ExpenseEntry: React.FC<IProps> = ({ hide, categories }) => {
+  const [fixed, setFixed] = useState(false);
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [newCategory, setNewCategory] = useState(false);
 
   const onSubmit = (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
-    if (auth.currentUser !== null) {
+
+    if (auth.currentUser === null) {
+      return;
+    }
+
+    if (newCategory) {
       const entry = {
-        name,
-        amount,
-        fixed,
+        name: category,
         userId: auth.currentUser.uid,
         createdAt: new Date(),
       };
 
-      firestore.collection("income").add(entry);
-      setFixed(true);
-      setAmount("");
-      setName("");
-      hide(false);
+      firestore.collection("categories").add(entry);
     }
   };
 
@@ -97,15 +73,31 @@ const IncomeEntry: React.FC<IProps> = ({ hide }) => {
 
       <InputField
         labelText="Name"
-        name="income-name"
+        name="expense-name"
         value={name}
         type="text"
         setValue={setName}
         visibilityToggle={false}
       />
-      <Spacer marginTop="2rem" />
+      <Spacer marginTop="1.5rem" />
+      {!newCategory && <StyledParagraph>Category:</StyledParagraph>}
+      {!newCategory && <Spacer marginTop="0.3rem" />}
+      {!newCategory && (
+        <Select setNewCategory={setNewCategory} options={categories} />
+      )}
+      {newCategory && (
+        <InputField
+          labelText="Category"
+          name="expense-category"
+          value={category}
+          type="text"
+          setValue={setCategory}
+          visibilityToggle={false}
+        />
+      )}
+      <Spacer marginTop="1.5rem" />
       <InputField
-        labelText="Amount per month (€)"
+        labelText="Amount (€)"
         name="amount"
         value={amount}
         type="number"
@@ -128,7 +120,7 @@ const IncomeEntry: React.FC<IProps> = ({ hide }) => {
         />
         <Button
           type="submit"
-          buttonText="Add income"
+          buttonText="Add expense"
           width="100px"
           height="35px"
           textSize="14px"
@@ -141,4 +133,4 @@ const IncomeEntry: React.FC<IProps> = ({ hide }) => {
   );
 };
 
-export default IncomeEntry;
+export default ExpenseEntry;

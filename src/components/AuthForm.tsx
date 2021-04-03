@@ -74,7 +74,7 @@ const AuthForm: React.FC<IAuthForm> = ({
   const login = async () => {
     try {
       const test = await authMethods.login(email, password);
-      console.log("🚀 ~ file: AuthForm.tsx ~ line 78 ~ login ~ test", test);
+      // console.log("🚀 ~ file: AuthForm.tsx ~ line 78 ~ login ~ test", test);
       setErrorCount(0);
     } catch (err) {
       setErrorCount(errorCount + 1);
