@@ -3,6 +3,7 @@ import styled from "styled-components";
 import lottie from "lottie-web";
 import AuthForm from "./AuthForm";
 import ErrorMessage from "../elements/ErrorMessage";
+import * as routes from "../constants/routes";
 import { Link } from "react-router-dom";
 import { PRIMARY_BLUE, PRIMARY_BLUE_HOVER } from "../constants/colors";
 
@@ -52,23 +53,10 @@ const StyledLink = styled(Link)`
   }
 `;
 
-interface IAuth {
-  paragraphURL: string;
-  paragraphText: string;
-  linkText: string;
-  formButtonText: string;
-  googleButtonText: string;
-}
-
-const Auth: React.FC<IAuth> = ({
-  paragraphURL,
-  paragraphText,
-  linkText,
-  formButtonText,
-  googleButtonText,
-}) => {
+const Auth: React.FC = () => {
   const [errorCount, setErrorCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
 
   const container = useRef<HTMLDivElement>(null);
 
@@ -84,6 +72,11 @@ const Auth: React.FC<IAuth> = ({
     }
   }, []);
 
+  const onAuthChange = () => {
+    setErrorCount(0);
+    setIsLogin(!isLogin);
+  };
+
   return (
     <Div>
       <Animation ref={container} />
@@ -92,13 +85,15 @@ const Auth: React.FC<IAuth> = ({
           errorCount={errorCount}
           setErrorCount={setErrorCount}
           setErrorMessage={setErrorMessage}
-          formButtonText={formButtonText}
-          googleButtonText={googleButtonText}
+          isLogin={isLogin}
         />
         <Paragraph>
-          {paragraphText}{" "}
-          <StyledLink onClick={() => setErrorCount(0)} to={paragraphURL}>
-            {linkText}
+          {isLogin ? "Don't have an account yet?" : "Already have an account?"}{" "}
+          <StyledLink
+            onClick={onAuthChange}
+            to={isLogin ? routes.SIGN_UP : routes.LOG_IN}
+          >
+            {isLogin ? "Sign Up!" : "Log in!"}
           </StyledLink>
         </Paragraph>
         <ErrorMessage message={errorMessage} errorCount={errorCount} />

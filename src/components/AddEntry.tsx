@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import { auth, firestore } from "../firebase";
-import {
-  StyledForm,
-  RadioArea,
-  StyledParagraph,
-  ButtonArea,
-} from "./IncomeEntry";
-import { ExpenseCategory } from "./Dashboard";
+import { auth } from "../firebase";
+import { ExpenseCategory } from "./AuthForm";
 import InputField from "../elements/InputField";
 import styled from "styled-components";
 import Button from "../elements/Button";
@@ -19,33 +13,57 @@ import {
   DARK_BLUE,
 } from "../constants/colors";
 
+export const StyledForm = styled.form`
+  width: 300px;
+  padding: 2rem;
+  border: 1px solid ${DARK_BLUE};
+  border-radius: 10px;
+`;
+
+export const RadioArea = styled.div`
+  display: flex;
+  width: 55%;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+
+  label {
+    font-weight: 600;
+    font-size: 14px;
+    input[type="radio"] {
+      margin-right: 0.2rem;
+    }
+  }
+`;
+
+export const StyledParagraph = styled.p`
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 0.8;
+`;
+
+export const ButtonArea = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+`;
+
 interface IProps {
   hide: React.Dispatch<React.SetStateAction<boolean>>;
   categories: ExpenseCategory[];
+  buttonText: string;
 }
 
-const ExpenseEntry: React.FC<IProps> = ({ hide, categories }) => {
+const ExpenseEntry: React.FC<IProps> = ({ hide, categories, buttonText }) => {
   const [fixed, setFixed] = useState(false);
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
-  const [newCategory, setNewCategory] = useState(false);
 
   const onSubmit = (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
 
     if (auth.currentUser === null) {
       return;
-    }
-
-    if (newCategory) {
-      const entry = {
-        name: category,
-        userId: auth.currentUser.uid,
-        createdAt: new Date(),
-      };
-
-      firestore.collection("categories").add(entry);
     }
   };
 
@@ -80,21 +98,9 @@ const ExpenseEntry: React.FC<IProps> = ({ hide, categories }) => {
         visibilityToggle={false}
       />
       <Spacer marginTop="1.5rem" />
-      {!newCategory && <StyledParagraph>Category:</StyledParagraph>}
-      {!newCategory && <Spacer marginTop="0.3rem" />}
-      {!newCategory && (
-        <Select setNewCategory={setNewCategory} options={categories} />
-      )}
-      {newCategory && (
-        <InputField
-          labelText="Category"
-          name="expense-category"
-          value={category}
-          type="text"
-          setValue={setCategory}
-          visibilityToggle={false}
-        />
-      )}
+      <StyledParagraph>Category:</StyledParagraph>
+      <Spacer marginTop="0.3rem" />
+      <Select options={categories} setCategory={setCategory} />
       <Spacer marginTop="1.5rem" />
       <InputField
         labelText="Amount (€)"
@@ -120,7 +126,7 @@ const ExpenseEntry: React.FC<IProps> = ({ hide, categories }) => {
         />
         <Button
           type="submit"
-          buttonText="Add expense"
+          buttonText={buttonText}
           width="100px"
           height="35px"
           textSize="14px"

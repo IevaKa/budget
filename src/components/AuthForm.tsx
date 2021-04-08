@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { auth, db, authMethods, firebase, firestore } from "../firebase";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { auth, db, authMethods } from "../firebase";
 import Button from "../elements/Button";
 import {
+  PRIMARY_GREEN_HOVER,
   DARK_BLUE,
   PRIMARY_GREEN,
-  PRIMARY_GREEN_HOVER,
   GOOGLE_RED,
   WHITE,
   GOOGLE_RED_HOVER,
@@ -55,19 +55,104 @@ interface IAuthForm {
   errorCount: number;
   setErrorCount: React.Dispatch<React.SetStateAction<number>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  formButtonText: string;
-  googleButtonText: string;
+  isLogin: boolean;
+}
+
+export interface ExpenseCategory {
+  id: string;
+  name: string;
 }
 
 const AuthForm: React.FC<IAuthForm> = ({
   errorCount,
   setErrorCount,
   setErrorMessage,
-  formButtonText,
-  googleButtonText,
+  isLogin,
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [expenseCategories, setExpenseCategories] = useState<ExpenseCategory[]>(
+    []
+  );
+  const [incomeCategories, setIncomeCategories] = useState<ExpenseCategory[]>(
+    []
+  );
+  const [savingsCategories, setSavingsCategories] = useState<ExpenseCategory[]>(
+    []
+  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isLogin) {
+      setIsLoading(true);
+      let unsubscribeFromFirestore: firebase.Unsubscribe;
+
+      (async () => {
+        unsubscribeFromFirestore = firestore
+          .collection("expenseCategories")
+          .onSnapshot((snap) => {
+            const categories = snap.docs.map((cat) => {
+              return {
+                id: cat.id,
+                name: cat.data().name,
+              };
+            });
+            setExpenseCategories(categories);
+            setIsLoading(false);
+          });
+      })();
+
+      return () => unsubscribeFromFirestore();
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    if (!isLogin) {
+      setIsLoading(true);
+      let unsubscribeFromFirestore: firebase.Unsubscribe;
+
+      (async () => {
+        unsubscribeFromFirestore = firestore
+          .collection("incomeCategories")
+          .onSnapshot((snap) => {
+            const categories = snap.docs.map((cat) => {
+              return {
+                id: cat.id,
+                name: cat.data().name,
+              };
+            });
+            setIncomeCategories(categories);
+            setIsLoading(false);
+          });
+      })();
+
+      return () => unsubscribeFromFirestore();
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    if (!isLogin) {
+      setIsLoading(true);
+      let unsubscribeFromFirestore: firebase.Unsubscribe;
+
+      (async () => {
+        unsubscribeFromFirestore = firestore
+          .collection("savingCategories")
+          .onSnapshot((snap) => {
+            const categories = snap.docs.map((cat) => {
+              return {
+                id: cat.id,
+                name: cat.data().name,
+              };
+            });
+            setSavingsCategories(categories);
+            setIsLoading(false);
+          });
+      })();
+
+      return () => unsubscribeFromFirestore();
+    }
+  }, [isLogin]);
 
   let history = useHistory();
 
@@ -95,7 +180,13 @@ const AuthForm: React.FC<IAuthForm> = ({
           password
         );
         setErrorCount(0);
-        user !== null && db.createUserProfileDocument(user);
+        user !== null &&
+          db.createUserProfileDocument(
+            user,
+            expenseCategories,
+            incomeCategories,
+            savingsCategories
+          );
         history.push("/dashboard");
       } catch (error) {
         setErrorCount(errorCount + 1);
@@ -107,16 +198,19 @@ const AuthForm: React.FC<IAuthForm> = ({
   const onSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
 
-    if (formButtonText === "Login") {
+    if (isLogin) {
       login();
     } else {
       signup();
     }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <AuthActions>
       <Button
-        buttonText={googleButtonText}
+        buttonText={isLogin ? "Login with Google" : "Sign up with Google"}
         textSize="14px"
         fontWeight={300}
         buttonColor={GOOGLE_RED}
@@ -148,7 +242,7 @@ const AuthForm: React.FC<IAuthForm> = ({
         />
         <Spacer marginTop="1rem" />
         <Button
-          buttonText={formButtonText}
+          buttonText={isLogin ? "Login" : "Sign Up"}
           buttonColor={PRIMARY_GREEN}
           hoverColor={PRIMARY_GREEN_HOVER}
           buttonShadow={true}

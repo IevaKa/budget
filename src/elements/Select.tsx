@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ExpenseCategory } from "../components/Dashboard";
+import { ExpenseCategory } from "../components/AuthForm";
 import {
   PRIMARY_GREEN,
   PRIMARY_GREEN_HOVER,
@@ -16,23 +16,18 @@ const StyledSelect = styled.select`
 `;
 
 interface IProps {
-  setNewCategory: React.Dispatch<React.SetStateAction<boolean>>;
   options: ExpenseCategory[];
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Select: React.FC<IProps> = ({ setNewCategory, options }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === "new") {
-      setNewCategory(true);
-    }
-  };
+const Select: React.FC<IProps> = ({ setCategory, options }) => {
   return (
-    <StyledSelect onChange={(e) => handleChange(e)}>
-      <option value="" style={{ display: "none" }}></option>
-      <option value="new">Add new</option>
-      {options.map(({ id, name }) => {
-        return <option value={id}>{name}</option>;
-      })}
+    <StyledSelect onChange={(e) => setCategory(e.target.value)}>
+      {options
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(({ id, name }) => {
+          return <option value={id}>{name}</option>;
+        })}
     </StyledSelect>
   );
 };

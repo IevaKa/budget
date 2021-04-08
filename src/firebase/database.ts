@@ -1,6 +1,12 @@
 import firebase, { firestore } from "./firebase";
+import { ExpenseCategory } from "../components/AuthForm";
 
-export const createUserProfileDocument = async (user: firebase.User) => {
+export const createUserProfileDocument = async (
+  user: firebase.User,
+  expenseCategories?: ExpenseCategory[],
+  incomeCategories?: ExpenseCategory[],
+  savingsCategories?: ExpenseCategory[]
+) => {
   if (!user) return;
 
   //   get a reference in the database
@@ -18,6 +24,9 @@ export const createUserProfileDocument = async (user: firebase.User) => {
         email,
         photoURL,
         createdAt,
+        expenseCategories,
+        incomeCategories,
+        savingsCategories,
       });
     } catch (error) {
       console.error("error creating user", error.message);

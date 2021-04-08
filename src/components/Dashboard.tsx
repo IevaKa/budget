@@ -1,47 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { auth, db, firebase, firestore } from "../firebase";
-import IncomeEntry from "./IncomeEntry";
-import ExpenseEntry from "./ExpenseEntry";
+import React, { useState } from "react";
+import ExpenseEntry from "./AddEntry";
 import Navbar from "./Navbar";
+import { ExpenseCategory } from "./AuthForm";
 
-export interface ExpenseCategory {
-  id: string;
-  name: string;
+interface IProps {
+  expenseCategories: ExpenseCategory[];
+  incomeCategories: ExpenseCategory[];
+  savingsCategories: ExpenseCategory[];
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<IProps> = ({
+  expenseCategories,
+  incomeCategories,
+  savingsCategories,
+}) => {
   const [showIncomeEntry, setShowIncomeEntry] = useState(false);
   const [showExpenseEntry, setShowExpenseEntry] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [expenseCategories, setExpenseCategories] = useState<ExpenseCategory[]>(
-    []
-  );
+  const [showSavingsEntry, setShowSavingsEntry] = useState(false);
 
-  useEffect(() => {
-    let unsubscribeFromFirestore: firebase.Unsubscribe;
-
-    (async () => {
-      if (auth.currentUser !== null) {
-        unsubscribeFromFirestore = firestore
-          .collection("categories")
-          .where("userId", "==", auth.currentUser.uid)
-          .onSnapshot((snap) => {
-            const categories = snap.docs.map((cat) => {
-              return {
-                id: cat.id,
-                name: cat.data().name,
-              };
-            });
-            setExpenseCategories(categories);
-            setIsLoading(false);
-          });
-      }
-    })();
-
-    return () => unsubscribeFromFirestore();
-  }, []);
-
-  if (isLoading) return <div>Loading...</div>;
   return (
     <div>
       <Navbar />
@@ -51,11 +27,28 @@ const Dashboard: React.FC = () => {
       <button onClick={() => setShowExpenseEntry(!showExpenseEntry)}>
         Add expense
       </button>
-      {showIncomeEntry && <IncomeEntry hide={setShowIncomeEntry} />}
+      <button onClick={() => setShowSavingsEntry(!showSavingsEntry)}>
+        Add savings
+      </button>
+      {showIncomeEntry && (
+        <ExpenseEntry
+          hide={setShowIncomeEntry}
+          categories={incomeCategories}
+          buttonText="Add income"
+        />
+      )}
       {showExpenseEntry && (
         <ExpenseEntry
           hide={setShowExpenseEntry}
           categories={expenseCategories}
+          buttonText="Add expense"
+        />
+      )}
+      {showSavingsEntry && (
+        <ExpenseEntry
+          hide={setShowSavingsEntry}
+          categories={savingsCategories}
+          buttonText="Add savings"
         />
       )}
     </div>

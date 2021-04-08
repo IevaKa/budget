@@ -7,7 +7,6 @@ import * as routes from "./constants/routes";
 
 const App: React.FC = () => {
   const { authUser, isLoading } = useContext(UserContext);
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -24,34 +23,14 @@ const App: React.FC = () => {
           exact={true}
           path={routes.LOG_IN}
           render={() =>
-            !authUser.id ? (
-              <Auth
-                paragraphURL={routes.SIGN_UP}
-                paragraphText="Don't have an account yet?"
-                linkText="Sign Up!"
-                formButtonText="Login"
-                googleButtonText="Login with Google"
-              />
-            ) : (
-              <Redirect to={routes.DASHBOARD} />
-            )
+            !authUser.id ? <Auth /> : <Redirect to={routes.DASHBOARD} />
           }
         />
         <Route
           exact={true}
           path={routes.SIGN_UP}
           render={() =>
-            !authUser.id ? (
-              <Auth
-                paragraphURL={routes.LOG_IN}
-                paragraphText="Already have an account?"
-                linkText="Log in!"
-                formButtonText="Sign Up"
-                googleButtonText="Sign up with Google"
-              />
-            ) : (
-              <Redirect to={routes.DASHBOARD} />
-            )
+            !authUser.id ? <Auth /> : <Redirect to={routes.DASHBOARD} />
           }
         />
 
@@ -59,7 +38,15 @@ const App: React.FC = () => {
           exact={true}
           path={routes.DASHBOARD}
           render={() =>
-            authUser.id ? <Dashboard /> : <Redirect to="/login" />
+            authUser.id ? (
+              <Dashboard
+                expenseCategories={authUser.expenseCategories}
+                incomeCategories={authUser.incomeCategories}
+                savingsCategories={authUser.savingsCategories}
+              />
+            ) : (
+              <Redirect to="/login" />
+            )
           }
         />
       </Switch>

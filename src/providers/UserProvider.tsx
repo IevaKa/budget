@@ -1,11 +1,15 @@
 import React, { createContext, useEffect, useState } from "react";
 import { auth, db, firebase } from "../firebase";
+import { ExpenseCategory } from "../components/AuthForm";
 
 export interface AuthUser {
   id: string;
   email: string;
   displayName: string;
   photoURL: string;
+  expenseCategories: ExpenseCategory[];
+  incomeCategories: ExpenseCategory[];
+  savingsCategories: ExpenseCategory[];
 }
 
 interface IUserContext {
@@ -18,6 +22,9 @@ const authUserDefault: AuthUser = {
   email: "",
   displayName: "",
   photoURL: "",
+  expenseCategories: [],
+  incomeCategories: [],
+  savingsCategories: [],
 };
 
 export const UserContext = createContext<IUserContext>({
@@ -40,8 +47,23 @@ const UserProvider: React.FC = ({ children }) => {
               const data = snapshot.data();
               setIsLoading(false);
               if (data) {
-                const { email, displayName, photoURL } = data;
-                setAuthUser({ id: snapshot.id, email, displayName, photoURL });
+                const {
+                  email,
+                  displayName,
+                  photoURL,
+                  expenseCategories,
+                  incomeCategories,
+                  savingsCategories,
+                } = data;
+                setAuthUser({
+                  id: snapshot.id,
+                  email,
+                  displayName,
+                  photoURL,
+                  expenseCategories,
+                  incomeCategories,
+                  savingsCategories,
+                });
               }
             });
         } else {
@@ -50,7 +72,6 @@ const UserProvider: React.FC = ({ children }) => {
         }
       });
     })();
-
     return () => unsubscribeFromAuth();
   }, []);
 
